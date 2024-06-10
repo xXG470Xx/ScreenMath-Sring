@@ -6,6 +6,7 @@ import com.aluracursos.Screenmach.model.DatosTemporadas;
 import com.aluracursos.Screenmach.model.Episodio;
 import com.aluracursos.Screenmach.service.ConsumoAPI;
 import com.aluracursos.Screenmach.service.ConvierteDatos;
+import org.yaml.snakeyaml.events.CollectionEndEvent;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -88,17 +89,24 @@ public class Principal {
 //                                "Fecha de Lanzamiento " + e.getFechaDeLanzamiento().format(dtf)
 //                ));
 
-        //Busca Episodios por un pedazo del titulo
-        System.out.println("Esbribe el titulo del eqpisodio que desea ver:");
-        var pedazoTitulo = teclado.nextLine();
-        Optional<Episodio> episodioBuscado = episodios.stream()
-                .filter(e -> e.getTitulo().toUpperCase().contains(pedazoTitulo.toUpperCase()))
-                .findFirst();
-        if(episodioBuscado.isPresent()){
-            System.out.println("Episodio Encontrado");
-            System.out.println("Datos: "+ episodioBuscado.get());
-        }else {
-            System.out.println("Episodio no encontrado");
-        }
+//        //Busca Episodios por un pedazo del titulo
+//        System.out.println("Esbribe el titulo del eqpisodio que desea ver:");
+//        var pedazoTitulo = teclado.nextLine();
+//        Optional<Episodio> episodioBuscado = episodios.stream()
+//                .filter(e -> e.getTitulo().toUpperCase().contains(pedazoTitulo.toUpperCase()))
+//                .findFirst();
+//        if(episodioBuscado.isPresent()){
+//            System.out.println("Episodio Encontrado");
+//            System.out.println("Datos: "+ episodioBuscado.get());
+//        }else {
+//            System.out.println("Episodio no encontrado");
+//        }
+
+
+        Map <Integer,Double> evaluacionesPorTemporadas = episodios.stream()
+                .filter(e -> e.getEvaluacion() > 0.0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getEvaluacion)));
+        System.out.println(evaluacionesPorTemporadas);
     }
 }
